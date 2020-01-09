@@ -4,82 +4,100 @@ import axios from 'axios';
 
 import './App.css';
 
+class Result extends Component {
+    constructor(props) {
+	super(props);
+    }   
+
+    render() {
+	return(
+	       <div>
+	       <h3> {this.props.city} </h3>
+	       <ul>
+	       <li> Location: ({this.props.longitude}, {this.props.latitude}) </li>
+	       <li> Wages: {this.props.wages} </li>
+	       <li> Population: {this.props.population} </li>
+	       </ul>
+	       </div>
+	       );
+    }
+}
+
+Result.propTypes = {
+    city: PropTypes.string,
+    longitude: PropTypes.string,
+    latitude: PropTypes.string,
+    population: PropTypes.string,
+    wages: PropTypes.string,
+    id: PropTypes.string
+};
+
+Result.defaultProps = {
+    city: "",
+    longitude: "",
+    latitude: "",
+    population: "",
+    wages: "",
+};
+
 class Searcher extends Component {
     constructor(props) {
 	super(props);
-
 	this.state = {
-	    stateUS: this.props.stateUS,
-	    lat: this.props.lat,
-	    lon: this.props.lon,
-	    pop: this.props.pop,
-	}
-	
+	    zip: "",
+	    data: []
+	}	
+	this.changeHandler = this.changeHandler.bind(this);
 	this.search = this.search.bind(this);
     }
-
+    
+    changeHandler(event) {	
+	this.setState({zip: event.target.value});
+    }
+    
     search() {
-	axios.get("http://ctp-zip-api.herokuapp.com/zip/" + document.getElementById("inputZipcode").value)
+	axios.get("http://ctp-zip-api.herokuapp.com/zip/" + this.state.zip)
 	    .then((response) => {
-		    console.log(response["data"]);
-		    response["data"].forEach(
-		    	address => {
-		    		this.state.stateUS.push(address["State"]);
-		    		this.state.lat.push(address["Lat"]);
-		    		this.state.lon.push(address["Long"]);
-		    		this.state.pop.push(address["EstimatedPopulation"]);
-		    	}
-		    )
-		    // console.log(this.state.stateUS);
-		    // console.log(this.state.lat);
-		    // console.log(this.state.lon);
-		    // console.log(this.state.pop);
+		    this.setState({data:response["data"]});
+		    console.log(this.state.data);
 		})
 	    .then((error) => {
 		    console.log(error);
-		})
+		});
     }
-
-    //http://ctp-zip-api.herokuapp.com/zip/11374
-
+    
     render() {
-	return (
-		<div>
-			Zip Code Searcher <br/>
-			<input type="text" id="inputZipcode"/> <br/>
-			<button onClick={this.search}> Search </button>
-			<div> 
-				{this.state.stateUS[0]} 
-				{this.state.lat[0]}
-				{this.state.lon[0]}
-				{this.state.pop[0]}
-			</div>
-		</div>
-		);
-		
+	var results = this.state.data.map((element) => <Result city={element.City} latitude={element.Lat} longitude={element.Long} population={element.EstimatedPopulation} wages={element.TotalWages} key={element.RecordNumber}/>);
+	
+	if (results.length === 0) {
+	    return (
+		    <div>
+		    
+		    <input type="text" onChange={this.changeHandler}/> <br/>
+		    <button onClick={this.search}> Submit </button>
+
+		    </div>
+		    );	
+	}
+	else {
+	    return (
+		    <div>
+		    
+		    <input type="text" onChange={this.changeHandler}/> <br/>
+		    <button onClick={this.search}> Submit </button>
+		    <div> {results} </div>
+		    </div>
+		    );
+	}
     }
-}
-
-Searcher.propTypes = {
-    stateUS: PropTypes.array,
-    lat: PropTypes.array,
-    lon: PropTypes.array,
-    pop: PropTypes.array
-};
-
-Searcher.defaultProps = {
-    stateUS: [],
-    lat: [],
-    lon: [],
-    pop: []
 }
 
 function App() {
-    return ( 
-	    <div class="App-header">
-	     <Searcher/>
-	     </div>
-	     );
+    return (
+            <div class="App-header">
+             <Searcher/>
+             </div>
+	    );
 }
 
 export default App;
