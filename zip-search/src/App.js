@@ -23,16 +23,16 @@ class CitySearcher extends Component {
             console.log(response.data);
             console.log(response.data[0]);
 
-            let table = [];
+            // let table = [];
 
-            for(let i = 0; i < response.data.length; i++) {
-              console.log(response.data[i]);
-              table.push(<h3>{response.data[i]}</h3>)
-            }
+            // for(let i = 0; i < response.data.length; i++) {
+            //   console.log(response.data[i]);
+            //   table.push(<h3>{response.data[i]}</h3>)
+            // }
             
 
             
-            this.setState({ data: table });
+            this.setState({ data: response.data });
             
 
         })
@@ -68,8 +68,8 @@ class CitySearcher extends Component {
 		City Searcher <br/>
 		<input type="text" id="inputCity"/> <br/>
 		<button onMouseDown={this.search}> Search </button>
-		<div> {this.state.data} </div>
-    {/* <div>this.createTable()</div> */}
+		{/* <div> {this.state.data} </div> */}
+    {this.state.data.map(zip => <div key={zip}><h3>{zip}</h3></div>)}
 		</div>
 		);
 		
