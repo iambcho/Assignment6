@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-
+import './cardStyle.css'
 import './App.css';
 
 class Result extends Component {
@@ -12,12 +12,14 @@ class Result extends Component {
     render() {
 	return(
 	       <div>
-	       <h3> {this.props.city} </h3>
-	       <ul>
-	       <li> Location: ({this.props.longitude}, {this.props.latitude}) </li>
-	       <li> Wages: {this.props.wages} </li>
-	       <li> Population: {this.props.population} </li>
-	       </ul>
+	       <p class="card"> {this.props.city} </p>
+	       <p>
+		       <ul>
+		       <li> Location: ({this.props.longitude}, {this.props.latitude}) </li>
+		       <li> Wages: {this.props.wages} </li>
+		       <li> Population: {this.props.population} </li>
+		       </ul>
+		   </p>
 	       </div>
 	       );
     }
@@ -72,31 +74,33 @@ class Searcher extends Component {
 	if (results.length === 0) {
 	    return (
 		    <div>
-		    
-		    <input type="text" onChange={this.changeHandler}/> <br/>
-		    <button onClick={this.search}> Submit </button>
-
+			    <input type="text" onChange={this.changeHandler}/> <br/>
+			    <button onClick={this.search}> Submit </button>
 		    </div>
 		    );	
 	}
 	else {
 	    return (
 		    <div>
-		    
-		    <input type="text" onChange={this.changeHandler}/> <br/>
-		    <button onClick={this.search}> Submit </button>
-		    <div> {results} </div>
+			    <input type="text" onChange={this.changeHandler}/> <br/>
+			    <button onClick={this.search}> Submit </button>
+			    <div> 
+			    {results}
+			    </div>
 		    </div>
 		    );
-	}
+		}
     }
 }
 
 function App() {
     return (
-            <div class="App-header">
-             <Searcher/>
-             </div>
+    		<div>
+    			<h1>Zip Searcher</h1>
+	            <div class="App-header">
+	             <Searcher/> 
+	            </div>
+            </div>
 	    );
 }
 
